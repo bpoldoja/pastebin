@@ -2,8 +2,9 @@ from flask import Flask, render_template, redirect, url_for, request, flash
 import os
 import uuid
 from pygments import highlight
-from pygments.lexers import guess_lexer_for_filename
+from pygments.lexers import guess_lexer_for_filename, get_lexer_by_name
 from pygments.formatters import HtmlFormatter
+from pygments.util import ClassNotFound
 
 app = Flask(__name__)
 app.config['SECRET_KEY']=str(uuid.uuid4())
@@ -19,8 +20,10 @@ def save_paste():
     title= request.form['title']
     text= request.form['text']
 
-    if not title or not text:
-        flash("Title or text empty")
+    if not title:
+        title = "Untitled"
+    if not text:
+        flash("Text is empty")
         return redirect(url_for('create_paste'))
 
     paste_id = str(uuid.uuid4())
@@ -46,7 +49,11 @@ def show_paste(paste_id, name):
     else:
         with open(paste_file, newline='\n') as f:
             code= f.read()
-            lexer= guess_lexer_for_filename(name, code)
+            try:
+                lexer= guess_lexer_for_filename(name, code)
+            except ClassNotFound:
+                lexer= get_lexer_by_name('text') 
+
             formatter = HtmlFormatter(linenos=True, style="colorful")
             code = highlight(code, lexer, formatter)
     return render_template("show_paste.html",code= code, title=name)
