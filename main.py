@@ -32,7 +32,7 @@ def save_paste():
     paste_file= os.path.join(paste_dir, title)
     print (paste_file)
 
-    with open(paste_file, 'w') as f:
+    with open(paste_file, 'w', newline='\n') as f:
         f.write(text)
 
     return redirect(url_for('show_paste', paste_id=paste_id, name=title))
@@ -44,7 +44,7 @@ def show_paste(paste_id, name):
         code = ''
         name = 'No such paste'
     else:
-        with open(paste_file) as f:
+        with open(paste_file, newline='\n') as f:
             code= f.read()
             lexer= guess_lexer_for_filename(name, code)
             formatter = HtmlFormatter(linenos=True, style="colorful")
