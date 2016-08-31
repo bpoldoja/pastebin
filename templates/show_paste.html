@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
   <h2>{{title}}</h2>
-  <code> 
-  {{code}}
-  </code>
+  <div>
+  {{code | safe}}
+  </div>
 {% endblock %}
