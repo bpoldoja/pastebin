@@ -18,6 +18,7 @@ def create_paste():
 @app.route("/paste", methods=['POST'])
 def save_paste():
     title= request.form['title']
+    title= os.path.basename(title)
     text= request.form['text']
 
     if not title:
